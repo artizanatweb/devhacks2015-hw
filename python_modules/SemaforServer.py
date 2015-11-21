@@ -99,4 +99,8 @@ class SemaforServer():
             self.changeLights(message['color'])
             self.status()
     
+    def clear(self):
+        GPIO.cleanup();
+        self.socket.close()
+    
     

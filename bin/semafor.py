@@ -14,7 +14,10 @@ except:
 
 if __name__ == '__main__':
     rssServer = ss.SemaforServer()
-    rssServer.setup()
-    rssServer.loop()
+    try:
+        rssServer.setup()
+        rssServer.loop()
+    except KeyboardInterrupt:
+        
 
 sys.exit(1)
