@@ -18,6 +18,6 @@ if __name__ == '__main__':
         rssServer.setup()
         rssServer.loop()
     except KeyboardInterrupt:
-        
+        rssServer.clear()
 
 sys.exit(1)
