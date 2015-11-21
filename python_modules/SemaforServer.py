@@ -17,7 +17,7 @@ class SemaforServer():
         self.port = "5891"
         self.red = 23
         self.yellow = 17
-        self.green = 18
+        self.green = 24
     
     def setup(self):
         #
