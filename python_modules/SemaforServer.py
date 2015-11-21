@@ -28,6 +28,10 @@ class SemaforServer():
         GPIO.setup(self.yellow, GPIO.OUT)
         GPIO.setup(self.green, GPIO.OUT)
         
+        GPIO.output(self.green, GPIO.LOW)
+        GPIO.output(self.red, GPIO.LOW)
+        GPIO.output(self.yellow, GPIO.LOW)
+        
         self.redStatus = 0
         self.yellowStatus = 0
         self.greenStatus = 0
