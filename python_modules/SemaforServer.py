@@ -93,6 +93,7 @@ class SemaforServer():
     
     def processMessage(self, jsonMessage):
         message = json.loads(jsonMessage)
+        print message
         if message['type'] == 'status':
             self.status()
         if message['type'] == 'color':
