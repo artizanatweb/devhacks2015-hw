@@ -44,7 +44,8 @@ class SemaforServer():
                 print message
                 start_new_thread(self.processMessage, (message,))
             except Exception:
-                print 'problema'
+                #print 'problema'
+                pass
             
             time.sleep(0.2)
     
