@@ -57,6 +57,7 @@ class StatusController extends Application_Plugins_Controller
                 break;
         }
         
+        $zmqClient->close();
         echo $response;
         return;
     }
