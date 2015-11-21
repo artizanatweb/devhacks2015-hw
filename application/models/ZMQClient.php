@@ -33,7 +33,7 @@ class Application_Model_ZMQClient
     
     public function close()
     {
-        $this->socket->close();
+        $this->socket->disconnect($this->address.":".  $this->port);
     }
     
     public function status()
