@@ -163,7 +163,7 @@ class SemaforServer():
         if self.redStatus == 1:
             return 'red'
     
-    def bindZmq(self, test):
+    def bindZmq(self, test=False):
         self.threadOn = 1
         try:
             message = self.socket.recv()
@@ -172,9 +172,9 @@ class SemaforServer():
             #self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
             self.processMessage()
-            self.threadOn = 0
+            self.bindZmq()
         except Exception:
-            self.threadOn = 0
+            self.bindZmq()
             #print 'problema'
             pass
     
