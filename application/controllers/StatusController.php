@@ -12,7 +12,8 @@ class StatusController extends Application_Plugins_Controller
     public function indexAction()
     {
         $message = array(
-            'type' => ''
+            'type' => '',
+            'device' => '',
         );
         $response = json_encode(array());
         // action body
@@ -20,6 +21,8 @@ class StatusController extends Application_Plugins_Controller
         $zmqClient->open();
         
         $turn = $this->getParam('turn', NULL);
+        $device = $this->getParam('device','a');
+        $message['device'] = $device;
         
         switch ($turn) {
             case 'red':

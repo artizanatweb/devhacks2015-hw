@@ -9,6 +9,7 @@ from thread import *
 import zmq
 import json
 import RPi.GPIO as GPIO
+import requests
 
 class SemaforServer():
     """ Semafor Server """
@@ -18,6 +19,14 @@ class SemaforServer():
         self.red = 23
         self.yellow = 17
         self.green = 24
+        
+        self.callTime = 5
+        
+        self.emergency = 0
+        
+        self.lastColorChange = int(time.time())
+        
+        self.serverURL = 'http://192.168.2.195:3000/api/devices/updatestatus'
     
     def setup(self):
         #
@@ -36,6 +45,8 @@ class SemaforServer():
         self.yellowStatus = 0
         self.greenStatus = 0
         
+        self.lastCall = int(time.time());
+        
         self.createServer()
     
     def loop(self):
@@ -46,10 +57,19 @@ class SemaforServer():
                 message = self.socket.recv()
                 print 'Message received'
                 print message
+                self.emergency = 1
                 start_new_thread(self.processMessage, (message,))
             except Exception:
                 #print 'problema'
                 pass
+            
+            if self.emergency == 0:
+                now = int(time.time())
+                if (now - self.lastCall) >= self.callTime:
+                    self.lastCall = now
+                    self.callServer()
+            else:
+                self.lastCall = int(time.time())
             
             time.sleep(0.2)
     
@@ -84,13 +104,19 @@ class SemaforServer():
                 self.yellowStatus = 0
                 GPIO.output(self.green, GPIO.HIGH)
                 self.greenStatus = 1
+        
+        self.lastColorChange = int(time.time())
                 
     def status(self):
         message = {}
-        message['red'] = self.redStatus
-        message['yellow'] = self.yellowStatus
-        message['green'] = self.greenStatus
+        message['a'] = {}
+        message['a']['red'] = self.redStatus
+        message['a']['yellow'] = self.yellowStatus
+        message['a']['green'] = self.greenStatus
+        
         jsonMessage = json.dumps(message)
+        print jsonMessage
+        return
         try:
             self.socket.send(jsonMessage)
         except Exception:
@@ -99,14 +125,40 @@ class SemaforServer():
     def processMessage(self, jsonMessage):
         message = json.loads(jsonMessage)
         print message
-        if message['type'] == 'status':
-            self.status()
-        if message['type'] == 'color':
-            self.changeLights(message['color'])
-            self.status()
+        if message['device'] == 'a':
+            if message['type'] == 'status':
+                self.status()
+            if message['type'] == 'color':
+                self.changeLights(message['color'])
+                self.status()
+        elif message['device'] == 'b':
+            pass
     
     def clear(self):
         GPIO.cleanup();
         self.socket.close()
+    
+    def callServer(self):
+        message = {}
+        message['a'] = {}
+        message['a']['color'] = self.getActualColor()
+        message['a']['light'] = 254
+        message['a']['lastColorChange'] = self.lastColorChange;
+        message['a']['img'] = ''
+        message['b'] = {}
+        
+        print json.dumps(message)
+        return True
+        
+        response = requests.post(self.serverURL, data=json.dumps(message))
+    
+    def getActualColor(self):
+        if self.greenStatus == 1:
+            return 'green'
+        if self.yellowStatus == 1:
+            return 'yellow'
+        if self.redStatus == 1:
+            return 'red'
+    
     
     
