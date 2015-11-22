@@ -96,6 +96,9 @@ class SemaforServer():
                 self.yellowStatus = 0
                 GPIO.output(self.red, GPIO.HIGH)
                 self.redStatus = 1
+            else:
+                GPIO.output(self.green, GPIO.LOW)
+                self.greenStatus = 0
             
         if color == 'green':
             if self.greenStatus == 0:
@@ -108,6 +111,9 @@ class SemaforServer():
                 self.yellowStatus = 0
                 GPIO.output(self.green, GPIO.HIGH)
                 self.greenStatus = 1
+            else:
+                GPIO.output(self.red, GPIO.LOW)
+                self.redStatus = 0
         
         self.lastColorChange = int(time.time())
                 
