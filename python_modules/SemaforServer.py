@@ -164,7 +164,7 @@ class SemaforServer():
             print 'Response from server:'
             print serverMessage
             conn.close()
-            self.processMessage(serverMessage)
+            self.processServerMessage(serverMessage)
         except httplib.HTTPException as e:
             print e
             print 'Server is not responding'
