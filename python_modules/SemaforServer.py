@@ -180,7 +180,7 @@ class SemaforServer():
             message = self.socket.recv()
             print 'Message received'
             print message
-            self.emergency = 1
+            #self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
             self.processMessage(message)
             time.sleep(0.2)
