@@ -147,6 +147,8 @@ class SemaforServer():
         message['b'] = {}
         
         response = requests.post(self.serverURL, data=json.dumps(message))
+        print 'Response from server:'
+        print response
     
     def getActualColor(self):
         if self.greenStatus == 1:
