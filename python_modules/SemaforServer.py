@@ -65,6 +65,7 @@ class SemaforServer():
             
             if self.emergency == 0:
                 now = int(time.time())
+                print ((now - self.lastCall) >= self.callTime)
                 if (now - self.lastCall) >= self.callTime:
                     self.lastCall = now
                     self.callServer()
