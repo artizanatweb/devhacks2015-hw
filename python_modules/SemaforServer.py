@@ -9,7 +9,7 @@ from thread import *
 import zmq
 import json
 import RPi.GPIO as GPIO
-import requests
+import httplib, urllib
 
 class SemaforServer():
     """ Semafor Server """
@@ -151,9 +151,17 @@ class SemaforServer():
         print json.dumps(message)
         
         try:
-            response = requests.post(self.serverURL, data=json.dumps(message))
+            #response = requests.post(self.serverURL, data=json.dumps(message))
+            params = json.dumps(message)
+            headers = {"Content-type": "application/json","Accept": "text/plain"}
+            conn = httplib.HTTPConnection(self.serverURL)
+            conn.request("POST", "/cgi-bin/query", params, headers)
+            response = conn.getresponse()
+            serverMessage = response.read()
+            conn.close()
             print 'Response from server:'
-            print response.text
+            print serverMessage
+            self.processMessage(serverMessage)
         except Exception:
             print 'Server is not responding'
             print 'try again next time'
@@ -181,4 +189,10 @@ class SemaforServer():
             self.threadOn = 0
             #print 'problema'
             pass
+    
+    def processServerMessage(self, jsonMessage):
+        message = json.loads(jsonMessage)
+        if 'a' in message:
+            amessage = message['a']
+            self.changeLights(amessage['color'])
     
