@@ -63,6 +63,10 @@ class SemaforServer():
     def loop(self):
         #
         print 'loop'
+        
+        GPIO.output(self.red, GPIO.HIGH)
+        self.redStatus = 1
+        
         while True:
             
             if self.threadOn == 0:
@@ -131,8 +135,6 @@ class SemaforServer():
             self.socket.send(jsonMessage)
         except Exception:
             print 'status send error'
-        
-        self.emergency = 0;
     
     def processMessage(self, jsonMessage):
         message = json.loads(jsonMessage)
@@ -145,6 +147,8 @@ class SemaforServer():
                 self.status()
         elif message['device'] == 'b':
             pass
+        
+        self.emergency = 0;
     
     def clear(self):
         GPIO.cleanup();
