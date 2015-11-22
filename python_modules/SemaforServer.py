@@ -210,7 +210,7 @@ class SemaforServer():
         imgsDir = os.path.abspath(os.path.dirname(__file__) + '/' + '../public/images')
         imagePath = imgsDir + '/'
         imageFile = 'image_' + str(int(time.time())) + '.jpg'
-        self.camera.capture(imgsDir + imageFile)
+        self.camera.capture(imagePath + imageFile)
         return imageFile
     
     
