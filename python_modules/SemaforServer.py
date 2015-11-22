@@ -10,6 +10,7 @@ import zmq
 import json
 import RPi.GPIO as GPIO
 import httplib, urllib
+import picamera
 
 class SemaforServer():
     """ Semafor Server """
@@ -50,7 +51,9 @@ class SemaforServer():
         self.yellowStatus = 0
         self.greenStatus = 0
         
-        self.lastCall = int(time.time());
+        self.lastCall = int(time.time())
+        
+        self.camera = picamera.PiCamera()
         
         self.createServer()
     
@@ -143,11 +146,11 @@ class SemaforServer():
         message['a']['color'] = self.getActualColor()
         message['a']['light'] = 254
         message['a']['lastColorChange'] = self.lastColorChange;
-        message['a']['img'] = ''
+        message['a']['img'] = self.getCamImage()
         message['b'] = {}
         
         print 'Send message to server'
-        #print json.dumps(message)
+        print json.dumps(message)
         
         try:
             #response = requests.post(self.serverURL, data=json.dumps(message))
@@ -162,7 +165,7 @@ class SemaforServer():
             conn.close()
             self.processServerMessage(serverMessage)
         except httplib.HTTPException as e:
-            #print e
+            print e
             print 'Server is not responding'
             print 'try again next time'
     
@@ -203,4 +206,11 @@ class SemaforServer():
             self.changeLights(amessage['color'])
             self.emergency = 0 if amessage['state'] == 'default' else 1
             
+    def getCamImage(self):
+        imgsDir = os.path.abspath(os.path.dirname(__file__) + '/' + '../public/images')
+        imagePath = imgsDir + '/'
+        imageFile = 'image_' + str(int(time.time())) + '.jpg'
+        camera.capture(imgsDir + imageFile)
+        return imageFile
+    
     
