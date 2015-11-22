@@ -57,7 +57,7 @@ class SemaforServer():
         while True:
             
             if self.threadOn == 0:
-                start_new_thread(self.bindZmq)
+                start_new_thread(self.bindZmq, (self.threadOn,))
             
             if self.emergency == 0:
                 now = int(time.time())
@@ -159,7 +159,7 @@ class SemaforServer():
         if self.redStatus == 1:
             return 'red'
     
-    def bindZmq(self):
+    def bindZmq(self, test):
         self.threadOn = 1
         try:
             message = self.socket.recv()
