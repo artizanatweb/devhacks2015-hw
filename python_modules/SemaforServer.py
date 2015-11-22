@@ -28,7 +28,7 @@ class SemaforServer():
         
         #self.serverURL = 'http://192.168.2.195:3000/api/devices/updatestatus'
         self.serverURL = '192.168.2.195'
-        self.serverCall = 'api/devices/updatestatus'
+        self.serverCall = '/api/devices/updatestatus'
         self.serverPort = 3000
         
         self.threadOn = 0
