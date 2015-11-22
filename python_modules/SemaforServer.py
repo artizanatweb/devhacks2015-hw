@@ -27,7 +27,8 @@ class SemaforServer():
         self.lastColorChange = int(time.time())
         
         #self.serverURL = 'http://192.168.2.195:3000/api/devices/updatestatus'
-        self.serverURL = '192.168.2.195:3000/api/devices/updatestatus'
+        self.serverURL = 'http://192.168.2.195:3000'
+        self.serverCall = '/api/devices/updatestatus'
         
         self.threadOn = 0
     
@@ -156,12 +157,12 @@ class SemaforServer():
             params = json.dumps(message)
             headers = {"Content-type": "application/json","Accept": "text/plain"}
             conn = httplib.HTTPConnection(self.serverURL)
-            conn.request("POST", "/cgi-bin/query", params, headers)
+            conn.request("POST", self.serverCall, params, headers)
             response = conn.getresponse()
             serverMessage = response.read()
-            conn.close()
             print 'Response from server:'
             print serverMessage
+            conn.close()
             self.processMessage(serverMessage)
         except Exception:
             print 'Server is not responding'
