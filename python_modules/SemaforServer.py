@@ -154,14 +154,17 @@ class SemaforServer():
         print 'Send message to server'
         print json.dumps(message)
         
-        params = json.dumps(message)
-        headers = {"Content-type": "application/json","Accept": "text/plain"}
-        conn = httplib.HTTPConnection(self.serverURL, self.serverPort)
-        
         try:
             #response = requests.post(self.serverURL, data=json.dumps(message))
-            
-            conn.request("POST", self.serverCall, params, headers)
+            params = json.dumps(message)
+            headers = {"Content-type": "application/json","Accept": "text/plain"}
+            conn = httplib.HTTPConnection(self.serverURL, self.serverPort)
+            try:
+                conn.request("POST", self.serverCall, params, headers)
+            except Exception:
+                conn.close()
+                print 'Socket error'
+                return
             response = conn.getresponse()
             serverMessage = response.read()
             #print 'Response from server:'
@@ -169,7 +172,6 @@ class SemaforServer():
             conn.close()
             self.processServerMessage(serverMessage)
         except httplib.HTTPException as e:
-            conn.close()
             print e
             print 'Server is not responding'
             print 'try again next time'
