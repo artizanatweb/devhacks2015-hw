@@ -62,12 +62,8 @@ class SemaforServer():
             if self.threadOn == 0:
                 start_new_thread(self.bindZmq, (self.threadOn,))
             
-            print 'emergency'
-            print self.emergency
-            
             if self.emergency == 0:
                 now = int(time.time())
-                print ((now - self.lastCall) >= self.callTime)
                 if (now - self.lastCall) >= self.callTime:
                     self.lastCall = now
                     self.callServer()
@@ -161,12 +157,12 @@ class SemaforServer():
             conn.request("POST", self.serverCall, params, headers)
             response = conn.getresponse()
             serverMessage = response.read()
-            print 'Response from server:'
-            print serverMessage
+            #print 'Response from server:'
+            #print serverMessage
             conn.close()
             self.processServerMessage(serverMessage)
         except httplib.HTTPException as e:
-            print e
+            #print e
             print 'Server is not responding'
             print 'try again next time'
     
@@ -184,7 +180,7 @@ class SemaforServer():
             message = self.socket.recv()
             print 'Message received'
             print message
-            #self.emergency = 1
+            self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
             self.processMessage(message)
             time.sleep(0.2)
@@ -192,7 +188,7 @@ class SemaforServer():
         except Exception:
             self.threadOn = 0
             #print 'problema'
-            pass
+            #pass
     
     def processServerMessage(self, jsonMessage):
         try:
@@ -204,4 +200,6 @@ class SemaforServer():
         if 'a' in message:
             amessage = message['a']
             self.changeLights(amessage['color'])
+            self.emergency = 0 if amessage['state'] == 'default' else 1
+            
     
