@@ -195,7 +195,12 @@ class SemaforServer():
             pass
     
     def processServerMessage(self, jsonMessage):
-        message = json.loads(jsonMessage)
+        try:
+            message = json.loads(jsonMessage)
+        except Exception:
+            print 'Response from server is not JSON'
+            return
+            
         if 'a' in message:
             amessage = message['a']
             self.changeLights(amessage['color'])
