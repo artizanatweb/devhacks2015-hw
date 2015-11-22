@@ -193,6 +193,7 @@ class SemaforServer():
     def processServerMessage(self, jsonMessage):
         try:
             message = json.loads(jsonMessage)
+            print message
         except Exception:
             print 'Response from server is not JSON'
             return
