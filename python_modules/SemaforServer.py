@@ -57,7 +57,7 @@ class SemaforServer():
                 message = self.socket.recv()
                 print 'Message received'
                 print message
-                self.emergency = 1
+                #self.emergency = 1
                 start_new_thread(self.processMessage, (message,))
             except Exception:
                 #print 'problema'
@@ -140,6 +140,7 @@ class SemaforServer():
     def callServer(self):
         message = {}
         message['a'] = {}
+        message['a']['state'] = 'emergency' if self.emergency == 1 else 'default'
         message['a']['color'] = self.getActualColor()
         message['a']['light'] = 254
         message['a']['lastColorChange'] = self.lastColorChange;
