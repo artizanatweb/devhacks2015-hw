@@ -59,6 +59,9 @@ class SemaforServer():
             if self.threadOn == 0:
                 start_new_thread(self.bindZmq, (self.threadOn,))
             
+            print 'emergency'
+            print self.emergency
+            
             if self.emergency == 0:
                 now = int(time.time())
                 print ((now - self.lastCall) >= self.callTime)
@@ -173,7 +176,7 @@ class SemaforServer():
             #start_new_thread(self.processMessage, (message,))
             self.processMessage()
             time.sleep(0.2)
-            self.bindZmq()
+            self.threadOn = 0
         except Exception:
             self.threadOn = 0
             #print 'problema'
