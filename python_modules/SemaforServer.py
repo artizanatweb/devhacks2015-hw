@@ -90,6 +90,8 @@ class SemaforServer():
         self.socket.bind("tcp://127.0.0.1:%s" % self.port)
         
     def changeLights(self, color):
+        colorChanged = 1 if self.getActualColor() != color else 0
+        
         if color == 'red':
             if self.redStatus == 0:
                 GPIO.output(self.green, GPIO.LOW)
@@ -120,7 +122,8 @@ class SemaforServer():
                 GPIO.output(self.red, GPIO.LOW)
                 self.redStatus = 0
         
-        self.lastColorChange = int(time.time())
+        if colorChanged > 0:
+            self.lastColorChange = int(time.time())
                 
     def status(self):
         message = {}
@@ -233,4 +236,7 @@ class SemaforServer():
         self.camera.capture(imagePath + imageFile)
         return self.urlPath + imageFile
     
+    def stopInTen(self, emergency=1):
+        time.sleep(10)
+        self.emergency = 0
     
