@@ -115,8 +115,7 @@ class SemaforServer():
         message['a']['green'] = self.greenStatus
         
         jsonMessage = json.dumps(message)
-        print jsonMessage
-        return
+        
         try:
             self.socket.send(jsonMessage)
         except Exception:
@@ -146,9 +145,6 @@ class SemaforServer():
         message['a']['lastColorChange'] = self.lastColorChange;
         message['a']['img'] = ''
         message['b'] = {}
-        
-        print json.dumps(message)
-        return True
         
         response = requests.post(self.serverURL, data=json.dumps(message))
     
