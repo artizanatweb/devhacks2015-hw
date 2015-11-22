@@ -32,6 +32,8 @@ class SemaforServer():
         self.serverCall = '/api/devices/updatestatus'
         self.serverPort = 3000
         
+        self.urlPath = "http://192.168.3.216/images/"
+        
         self.threadOn = 0
     
     def setup(self):
@@ -152,11 +154,13 @@ class SemaforServer():
         print 'Send message to server'
         print json.dumps(message)
         
+        params = json.dumps(message)
+        headers = {"Content-type": "application/json","Accept": "text/plain"}
+        conn = httplib.HTTPConnection(self.serverURL, self.serverPort)
+        
         try:
             #response = requests.post(self.serverURL, data=json.dumps(message))
-            params = json.dumps(message)
-            headers = {"Content-type": "application/json","Accept": "text/plain"}
-            conn = httplib.HTTPConnection(self.serverURL, self.serverPort)
+            
             conn.request("POST", self.serverCall, params, headers)
             response = conn.getresponse()
             serverMessage = response.read()
@@ -165,6 +169,7 @@ class SemaforServer():
             conn.close()
             self.processServerMessage(serverMessage)
         except httplib.HTTPException as e:
+            conn.close()
             print e
             print 'Server is not responding'
             print 'try again next time'
@@ -211,6 +216,6 @@ class SemaforServer():
         imagePath = imgsDir + '/'
         imageFile = 'image_' + str(int(time.time())) + '.jpg'
         self.camera.capture(imagePath + imageFile)
-        return imageFile
+        return self.urlPath + imageFile
     
     
