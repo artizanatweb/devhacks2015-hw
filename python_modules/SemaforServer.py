@@ -28,7 +28,7 @@ class SemaforServer():
         
         #self.serverURL = 'http://192.168.2.195:3000/api/devices/updatestatus'
         self.serverURL = 'http://192.168.2.195:3000'
-        self.serverCall = '/api/devices/updatestatus'
+        self.serverCall = 'api/devices/updatestatus'
         
         self.threadOn = 0
     
@@ -164,7 +164,8 @@ class SemaforServer():
             print serverMessage
             conn.close()
             self.processMessage(serverMessage)
-        except Exception:
+        except Exception as e:
+            print e
             print 'Server is not responding'
             print 'try again next time'
     
