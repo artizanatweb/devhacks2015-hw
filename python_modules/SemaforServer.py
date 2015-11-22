@@ -174,7 +174,7 @@ class SemaforServer():
             print message
             #self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
-            self.processMessage()
+            self.processMessage(message)
             time.sleep(0.2)
             self.threadOn = 0
         except Exception:
