@@ -24,6 +24,7 @@ class SemaforServer():
         self.callTime = 5
         
         self.emergency = 0
+        self.isEmergency = 0
         
         self.lastColorChange = int(time.time())
         
@@ -67,7 +68,7 @@ class SemaforServer():
             if self.threadOn == 0:
                 start_new_thread(self.bindZmq, (self.threadOn,))
             
-            if self.emergency == 0:
+            if self.emergency == 0 and self.isEmergency == 0:
                 now = int(time.time())
                 if (now - self.lastCall) >= self.callTime:
                     self.lastCall = now
@@ -130,6 +131,8 @@ class SemaforServer():
             self.socket.send(jsonMessage)
         except Exception:
             print 'status send error'
+        
+        self.emergency = 0;
     
     def processMessage(self, jsonMessage):
         message = json.loads(jsonMessage)
@@ -150,7 +153,7 @@ class SemaforServer():
     def callServer(self):
         message = {}
         message['a'] = {}
-        message['a']['state'] = 'emergency' if self.emergency == 1 else 'default'
+        message['a']['state'] = 'emergency' if self.isEmergency == 1 else 'default'
         message['a']['color'] = self.getActualColor()
         message['a']['light'] = 254
         message['a']['lastColorChange'] = self.lastColorChange;
@@ -196,7 +199,7 @@ class SemaforServer():
             message = self.socket.recv()
             print 'Message received'
             print message
-            #self.emergency = 1
+            self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
             self.processMessage(message)
             time.sleep(0.2)
@@ -217,7 +220,7 @@ class SemaforServer():
         if 'a' in message:
             amessage = message['a']
             self.changeLights(amessage['color'])
-            self.emergency = 0 if amessage['state'] == 'default' else 1
+            self.isEmergency = 0 if amessage['state'] == 'default' else 1
             
     def getCamImage(self):
         imgsDir = os.path.abspath(os.path.dirname(__file__) + '/' + '../public/images')
