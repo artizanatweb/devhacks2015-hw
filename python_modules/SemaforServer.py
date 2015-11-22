@@ -172,9 +172,10 @@ class SemaforServer():
             #self.emergency = 1
             #start_new_thread(self.processMessage, (message,))
             self.processMessage()
+            time.sleep(0.2)
             self.bindZmq()
         except Exception:
-            self.bindZmq()
+            self.threadOn = 0
             #print 'problema'
             pass
     
