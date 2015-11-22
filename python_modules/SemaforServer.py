@@ -27,6 +27,8 @@ class SemaforServer():
         self.lastColorChange = int(time.time())
         
         self.serverURL = 'http://192.168.2.195:3000/api/devices/updatestatus'
+        
+        self.threadOn = 0
     
     def setup(self):
         #
@@ -53,15 +55,9 @@ class SemaforServer():
         #
         print 'loop'
         while True:
-            try:
-                message = self.socket.recv()
-                print 'Message received'
-                print message
-                #self.emergency = 1
-                start_new_thread(self.processMessage, (message,))
-            except Exception:
-                #print 'problema'
-                pass
+            
+            if self.threadOn == 0:
+                start_new_thread(self.bindZmq)
             
             if self.emergency == 0:
                 now = int(time.time())
@@ -163,5 +159,18 @@ class SemaforServer():
         if self.redStatus == 1:
             return 'red'
     
-    
+    def bindZmq(self):
+        self.threadOn = 1
+        try:
+            message = self.socket.recv()
+            print 'Message received'
+            print message
+            #self.emergency = 1
+            #start_new_thread(self.processMessage, (message,))
+            self.processMessage()
+            self.threadOn = 0
+        except Exception:
+            self.threadOn = 0
+            #print 'problema'
+            pass
     
